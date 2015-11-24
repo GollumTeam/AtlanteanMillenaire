@@ -20,15 +20,15 @@ public class ModelRenderer {
 		
 		public class Point3D {
 			
-			public float x = 0.f;
-			public float y = 0.f;
-			public float z = 0.f;
+			public double x = 0.f;
+			public double y = 0.f;
+			public double z = 0.f;
 
 			public Point3D() {
 				this(0.f, 0.f, 0.f);
 			}
 			
-			public Point3D(float x, float y, float z) {
+			public Point3D(double x, double y, double z) {
 				super();
 				this.x = x;
 				this.y = y;
@@ -46,7 +46,7 @@ public class ModelRenderer {
 			}
 
 			public void mirrorY() {
-				this.y = -this.y;
+				this.y = -this.y + 1.F;
 			}
 
 			public void mirrorZ() {
@@ -56,15 +56,15 @@ public class ModelRenderer {
 		
 		public ModelRenderer render;
 		
-		public float x = 0;
-		public float y = 0;
-		public float z = 0;
+		public double x = 0;
+		public double y = 0;
+		public double z = 0;
 		
 		public int w = 0;
 		public int h = 0;
 		public int l = 0;
 		
-		public Box (ModelRenderer render, float x, float y, float z, int w, int h, int l) {
+		public Box (ModelRenderer render, double x, double y, double z, int w, int h, int l) {
 			this.render = render;
 			this.x = x;
 			this.y = y;
@@ -79,7 +79,7 @@ public class ModelRenderer {
 			return v;
 		}
 		protected Point3D getP1 (float f5) {
-			Point3D v = new Point3D((this.x + ((float) this.w)) * f5, (this.y + ((float) this.h)) * f5, (this.z + ((float) this.l)) * f5);
+			Point3D v = new Point3D((this.x + ((double) this.w)) * f5, (this.y + ((double) this.h)) * f5, (this.z + ((double) this.l)) * f5);
 			return v;
 		}
 		
@@ -101,64 +101,156 @@ public class ModelRenderer {
 			
 			IIcon c = ModBlocks.blockDemo.getIcon(0, 0);
 			
-			float minU = c.getMinU();
-			float minV = c.getMinV();
-			float maxU = c.getMaxU();
-			float maxV = c.getMaxV();
+			double wBlock = Math.abs(p1.x - p2.x) / f5;
+			double hBlock = Math.abs(p1.y - p2.y) / f5;
+			double lBlock = Math.abs(p1.z - p2.z) / f5;
 			
-			float u, v, U, V;
+			double minU = c.getMinU();
+			double minV = c.getMinV();
+			double maxU = c.getMaxU();
+			double maxV = c.getMaxV();
 			
-			u = minU + textureY / textureH;
-			v = minV + textureX / textureW;
-			
-			u = minU;
-			v = minV;
-			
-			U = maxU;
-			V = maxV;
-			
-			u = 0;
-			v = 0;
-			
-			U = 1;
-			V = 1;
+			double u, v, U, V;
+			double pixelU, pixelV;
+			double posX, posY;
 
+			double dU = maxU - minU;
+			double dV = maxV - minV;
 			
-			// Back
+			double unitU = dU / textureW;
+			double unitV = dV / textureH;
+			
+			// Top
+			
+			maxU = minU + unitU*wBlock;
+			maxV = minV + unitV*lBlock;
+			dU = maxU - minU;
+			dV = maxV - minV;
+			pixelU = dU / wBlock;
+			pixelV = dV / lBlock;
+			
+			posX = offsetX + lBlock;
+			posY = offsetY + 0;
+			
+			u = minU + pixelU * posX;
+			v = minV + pixelV * posY;
+			U = maxU + pixelU * posX;
+			V = maxV + pixelV * posY;
+			
 			tessellator.addVertexWithUV(p1.x, p2.y, p1.z, u, v);
-			tessellator.addVertexWithUV(p2.x, p2.y, p1.z, u, V);
-			tessellator.addVertexWithUV(p2.x, p1.y, p1.z, U, V);
-			tessellator.addVertexWithUV(p1.x, p1.y, p1.z, U, v);
-			
-			// Left
-			tessellator.addVertexWithUV(p1.x, p1.y, p1.z, u, v);
-			tessellator.addVertexWithUV(p1.x, p1.y, p2.z, u, V);
-			tessellator.addVertexWithUV(p1.x, p2.y, p2.z, U, V);
-			tessellator.addVertexWithUV(p1.x, p2.y, p1.z, U, v);
-			
-			// Right
-			tessellator.addVertexWithUV(p2.x, p2.y, p1.z, u, v);
-			tessellator.addVertexWithUV(p2.x, p2.y, p2.z, u, V);
-			tessellator.addVertexWithUV(p2.x, p1.y, p2.z, U, V);
-			tessellator.addVertexWithUV(p2.x, p1.y, p1.z, U, v);
-			
-			// Front
-			tessellator.addVertexWithUV(p1.x, p1.y, p2.z, u, v);
-			tessellator.addVertexWithUV(p2.x, p1.y, p2.z, u, V);
+			tessellator.addVertexWithUV(p1.x, p2.y, p2.z, u, V);
 			tessellator.addVertexWithUV(p2.x, p2.y, p2.z, U, V);
-			tessellator.addVertexWithUV(p1.x, p2.y, p2.z, U, v);
+			tessellator.addVertexWithUV(p2.x, p2.y, p1.z, U, v);
 			
 			// Bottom
+			
+			maxU = minU + unitU*wBlock;
+			maxV = minV + unitV*lBlock;
+			dU = maxU - minU;
+			dV = maxV - minV;
+			pixelU = dU / wBlock;
+			pixelV = dV / lBlock;
+			
+			posX = offsetX + wBlock + lBlock;
+			posY = offsetY + 0;
+			
+			u = minU + pixelU * posX;
+			v = minV + pixelV * posY;
+			U = maxU + pixelU * posX;
+			V = maxV + pixelV * posY;
+			
 			tessellator.addVertexWithUV(p2.x, p1.y, p1.z, u, v);
 			tessellator.addVertexWithUV(p2.x, p1.y, p2.z, u, V);
 			tessellator.addVertexWithUV(p1.x, p1.y, p2.z, U, V);
 			tessellator.addVertexWithUV(p1.x, p1.y, p1.z, U, v);
 			
-			// Top
+			// Front
+			
+			maxU = minU + unitU*wBlock;
+			maxV = minV + unitV*hBlock;
+			dU = maxU - minU;
+			dV = maxV - minV;
+			pixelU = dU / wBlock;
+			pixelV = dV / hBlock;
+			
+			posX = offsetX + lBlock;
+			posY = offsetY + lBlock;
+			
+			u = minU + pixelU * posX;
+			v = minV + pixelV * posY;
+			U = maxU + pixelU * posX;
+			V = maxV + pixelV * posY;
+			
+			tessellator.addVertexWithUV(p1.x, p1.y, p2.z, u, V);
+			tessellator.addVertexWithUV(p2.x, p1.y, p2.z, U, V);
+			tessellator.addVertexWithUV(p2.x, p2.y, p2.z, U, v);
+			tessellator.addVertexWithUV(p1.x, p2.y, p2.z, u, v);
+			
+			// Back
+			
+			maxU = minU + unitU*wBlock;
+			maxV = minV + unitV*hBlock;
+			dU = maxU - minU;
+			dV = maxV - minV;
+			pixelU = dU / wBlock;
+			pixelV = dV / hBlock;
+			
+			posX = offsetX + wBlock + lBlock + lBlock;
+			posY = offsetY + lBlock;
+			
+			u = minU + pixelU * posX;
+			v = minV + pixelV * posY;
+			U = maxU + pixelU * posX;
+			V = maxV + pixelV * posY;
+			
+			tessellator.addVertexWithUV(p1.x, p2.y, p1.z, U, V);
+			tessellator.addVertexWithUV(p2.x, p2.y, p1.z, u, V);
+			tessellator.addVertexWithUV(p2.x, p1.y, p1.z, u, v);
+			tessellator.addVertexWithUV(p1.x, p1.y, p1.z, U, v);
+			
+			// Left
+			
+			maxU = minU + unitU*lBlock;
+			maxV = minV + unitV*hBlock;
+			dU = maxU - minU;
+			dV = maxV - minV;
+			pixelU = dU / lBlock;
+			pixelV = dV / hBlock;
+			
+			posX = offsetX + 0;
+			posY = offsetY + lBlock;
+			
+			u = minU + pixelU * posX;
+			v = minV + pixelV * posY;
+			U = maxU + pixelU * posX;
+			V = maxV + pixelV * posY;
+			
+			tessellator.addVertexWithUV(p1.x, p1.y, p1.z, u, V);
+			tessellator.addVertexWithUV(p1.x, p1.y, p2.z, U, V);
+			tessellator.addVertexWithUV(p1.x, p2.y, p2.z, U, v);
 			tessellator.addVertexWithUV(p1.x, p2.y, p1.z, u, v);
-			tessellator.addVertexWithUV(p1.x, p2.y, p2.z, u, V);
-			tessellator.addVertexWithUV(p2.x, p2.y, p2.z, U, V);
+			
+			// Right
+			
+			maxU = minU + unitU*lBlock;
+			maxV = minV + unitV*hBlock;
+			dU = maxU - minU;
+			dV = maxV - minV;
+			pixelU = dU / lBlock;
+			pixelV = dV / hBlock;
+			
+			posX = offsetX + lBlock + wBlock;
+			posY = offsetY + lBlock;
+			
+			u = minU + pixelU * posX;
+			v = minV + pixelV * posY;
+			U = maxU + pixelU * posX;
+			V = maxV + pixelV * posY;
+			
 			tessellator.addVertexWithUV(p2.x, p2.y, p1.z, U, v);
+			tessellator.addVertexWithUV(p2.x, p2.y, p2.z, u, v);
+			tessellator.addVertexWithUV(p2.x, p1.y, p2.z, u, V);
+			tessellator.addVertexWithUV(p2.x, p1.y, p1.z, U, V);
 		}
 		
 	}
@@ -170,14 +262,14 @@ public class ModelRenderer {
 	
 	public ArrayList<Box> boxs = new ArrayList<Box>();
 
-	private int textureX;
-	private int textureY;
+	private int offsetX;
+	private int offsetY;
 	private int textureW;
 	private int textureH;
 
 	public ModelRenderer(ModelBase model, int U, int V) {
-		this.textureX = U;
-		this.textureY = V;
+		this.offsetX = U;
+		this.offsetY = V;
 	}
 
 	public void addBox(float x1, float y1, float z1, int x2, int y2, int z2) {
@@ -196,14 +288,17 @@ public class ModelRenderer {
 	}
 	
 	public void beforeTransformBox(Point3D p) {
+		
 		p.translate(this.rotationPointX / MIN_BOX_WIDTH, this.rotationPointY / MIN_BOX_WIDTH, this.rotationPointZ / MIN_BOX_WIDTH);
 		
 		if (this.mirror) {
 			p.mirrorY ();
 		}
 		
+		p.translate(0.5F, 0.5F, 0.5F);
+		
 	}
-
+	
 	public void setRotationPoint(float f, float g, float h) {
 		this.rotationPointX = f;
 		this.rotationPointY = g;

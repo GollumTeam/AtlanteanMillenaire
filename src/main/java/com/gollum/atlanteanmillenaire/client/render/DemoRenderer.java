@@ -4,8 +4,8 @@ import java.util.HashMap;
 
 import com.gollum.atlanteanmillenaire.client.ClientProxyAtlanteanMillenaire;
 import com.gollum.atlanteanmillenaire.client.model.ModelArmChair;
-import com.gollum.atlanteanmillenaire.client.model.ModelBathroomSink;
-import com.gollum.atlanteanmillenaire.client.model.ModelLight;
+import com.gollum.atlanteanmillenaire.client.model.ModelCooker;
+import com.gollum.atlanteanmillenaire.client.model.ModelSofaCenter;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
@@ -35,8 +35,10 @@ public class DemoRenderer extends AModelRenderer {
 		
 		super.renderWorldBlock(world, x, y, z, block, modelId, renderer);
 //		this.renderModel(new ModelLight(), "blockdemo", x, y, z, 0, renderer);
-		this.renderModel(new ModelArmChair(), "blockdemo", x, y, z, 0, renderer);
+//		this.renderModel(new ModelArmChair(), "blockdemo", x, y, z, 0, renderer);
+		this.renderModel(new ModelCooker(), "blockdemo", x, y, z, 0, renderer);
 //		this.renderModel(new ModelBathroomSink(), "blockdemo", x, y, z, 0, renderer);
+//		this.renderModel(new ModelSofaCenter(), "blockdemo", x, y, z, 0, renderer);
 		
 		return true;
 	}
