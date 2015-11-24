@@ -8,12 +8,16 @@ import com.gollum.atlanteanmillenaire.ModAtlanteanMillenaire;
 import com.gollum.atlanteanmillenaire.client.model.ModelArmChair;
 import com.gollum.atlanteanmillenaire.client.model.ModelBase;
 import com.gollum.atlanteanmillenaire.client.model.ModelLight;
+import com.gollum.atlanteanmillenaire.client.model.ModelRenderer;
+import com.gollum.atlanteanmillenaire.client.render.texture.TextureModel;
+import com.gollum.atlanteanmillenaire.inits.ModBlocks;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 
@@ -40,74 +44,21 @@ public abstract class AModelRenderer implements ISimpleBlockRenderingHandler {
 		return true;
 	}
 	
-	protected ResourceLocation getTexture (String name) {
-		if (this.textures.containsKey(name)) {
-			return this.textures.get (name);
-		}
-		ResourceLocation texture = new ResourceLocation(ModAtlanteanMillenaire.MODID.toLowerCase()+":textures/models/"+name+".png");
-		this.textures.put(name, texture);
-		return texture;
-	}
-	
-	protected void renderModel(ModelBase model, String textureName, int x, int y, int z, float rotation) {
+	protected void renderModel(ModelBase model, String textureName, int x, int y, int z, float rotation, RenderBlocks renderer) {
 		
 		Tessellator tessellator = Tessellator.instance;
 		tessellator.addTranslation(x, y, z);
 		
-		//tessellator.draw();
-		//this.beforeRender(textureName, x, y, z, rotation);
-		model.renderModel(0.0625F);
-		//this.endRender();
+//		IIcon icon = ;
+		renderer.setOverrideBlockTexture(ModBlocks.blockDemo.getIcon(0, 0));
+//		renderer.setOverrideBlockTexture(new TextureModel(textureName));
+		model.renderModel(1.f / ModelRenderer.MIN_BOX_WIDTH);
 		
-		//tessellator.startDrawing(5);
-		
-
 		tessellator.addTranslation(-x, -y, -z);
+		
+		renderer.clearOverrideBlockTexture();
 	}
 	
-	/*
-	protected void beforeRender(String textureName, double x, double y, double z, float rotation) {
-		
-		//this.bindTexture(this.getTexture(textureName));
-		
-		if (this.isInventory && this.lightInventory) {
-			RenderHelper.enableGUIStandardItemLighting();
-		} else {
-			if (this.light) {
-				RenderHelper.disableStandardItemLighting();
-			} else {
-				RenderHelper.enableStandardItemLighting();
-			}
-		}
-		
-		GL11.glPushMatrix();
-		GL11.glPushMatrix();
-		GL11.glTranslatef((float) x + 0.5F, (float) y + 0.5F + (float)(this.isInventory ? this.scaleInventory : 1.0), (float) z + 0.5F);
-		GL11.glRotatef((float) rotation, 0.0F, 1.0F, 0.0F);
-		GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-		GL11.glScaled(
-			this.scale * (this.isInventory ? this.scaleInventory : 1.0),
-			this.scale * (this.isInventory ? this.scaleInventory : 1.0), 
-			this.scale * (this.isInventory ? this.scaleInventory : 1.0)
-		);
-		
-		if (this.alpha != 1.0F && !this.isInventory) {
-			GL11.glEnable(GL11.GL_BLEND);
-			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-			GL11.glColor4f(1F, 1F, 1F, this.alpha);
-		}
-	}
-	
-	protected void endRender() {
-		RenderHelper.enableGUIStandardItemLighting();
-		GL11.glPopMatrix();
-		if (this.alpha != 1.0F && !this.isInventory) {
-			GL11.glDisable(GL11.GL_BLEND);
-			GL11.glColor4f(1f, 1f, 1f, 1f);
-		}
-		GL11.glPopMatrix();
-	}
-	*/
 	@Override
 	public boolean shouldRender3DInInventory(int modelId) {
 		return true;

@@ -2,19 +2,12 @@ package com.gollum.atlanteanmillenaire.client.render;
 
 import java.util.HashMap;
 
-import org.lwjgl.opengl.GL11;
-
-import com.gollum.atlanteanmillenaire.ModAtlanteanMillenaire;
 import com.gollum.atlanteanmillenaire.client.ClientProxyAtlanteanMillenaire;
 import com.gollum.atlanteanmillenaire.client.model.ModelArmChair;
-import com.gollum.atlanteanmillenaire.client.model.ModelBase;
-import com.gollum.atlanteanmillenaire.client.model.ModelLight;
+import com.gollum.atlanteanmillenaire.client.model.ModelBathroomSink;
 
-import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 
@@ -40,8 +33,9 @@ public class DemoRenderer extends AModelRenderer {
 	public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer) {
 		
 		super.renderWorldBlock(world, x, y, z, block, modelId, renderer);
-		this.renderModel(new ModelLight(), "armchair", x, y, z, 0);
-//		this.renderModel(new ModelArmChair(), "armchair", x, y, z, 0);
+//		this.renderModel(new ModelLight(), "blockdemo", x, y, z, 0);
+		this.renderModel(new ModelArmChair(), "blockdemo", x, y, z, 0, renderer);
+//		this.renderModel(new ModelBathroomSink(), "blockdemo", x, y, z, 0);
 		
 		return true;
 	}

@@ -19,6 +19,7 @@ public class ModelArmChair extends ModelBase {
 	public ModelArmChair() {
 		this.textureWidth = 128;
 		this.textureHeight = 64;
+		
 		this.chairBase = new ModelRenderer(this, 0, 33);
 		this.chairBase.addBox(0.0F, 0.0F, 0.0F, 16, 3, 16);
 		this.chairBase.setRotationPoint(-8.0F, 19.0F, -8.0F);

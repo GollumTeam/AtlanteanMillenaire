@@ -2,11 +2,17 @@ package com.gollum.atlanteanmillenaire.client.model;
 
 import java.util.ArrayList;
 
-import org.lwjgl.opengl.GL11;
+import com.gollum.atlanteanmillenaire.client.model.ModelRenderer.Box.Point3D;
+import com.gollum.atlanteanmillenaire.inits.ModBlocks;
 
+import javafx.scene.transform.Transform;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.Tuple;
 
 public class ModelRenderer {
+	
+	public static final float MIN_BOX_WIDTH = 16.f;
 	
 	public float rotationPointX = 0.0f;
 	public float rotationPointY = 0.0f;
@@ -14,81 +20,122 @@ public class ModelRenderer {
 	
 	public class Box {
 		
+		public class Point3D {
+			
+			public float x = 0.f;
+			public float y = 0.f;
+			public float z = 0.f;
+
+			public Point3D() {
+				this(0.f, 0.f, 0.f);
+			}
+			
+			public Point3D(float x, float y, float z) {
+				super();
+				this.x = x;
+				this.y = y;
+				this.z = z;
+			}
+
+			public void translate(float x, float y, float z) {
+				this.x += x;
+				this.y += y;
+				this.z += z;
+			}
+
+			public void mirrorX() {
+				this.y = -this.y;
+			}
+
+			public void mirrorY() {
+				this.y = -this.y;
+			}
+
+			public void mirrorZ() {
+				this.y = -this.y;
+			}
+		}
+		
 		public ModelRenderer render;
 		
-		public float x1 = 0;
-		public float y1 = 0;
-		public float z1 = 0;
-		public int x2 = 0;
-		public int y2 = 0;
-		public int z2 = 0;
+		public float x = 0;
+		public float y = 0;
+		public float z = 0;
 		
-		public Box (ModelRenderer render, float x1, float y1, float z1, int x2, int y2, int z2) {
+		public int w = 0;
+		public int h = 0;
+		public int l = 0;
+		
+		public Box (ModelRenderer render, float x, float y, float z, int w, int h, int l) {
 			this.render = render;
-			this.x1 = x1;
-			this.y1 = y1;
-			this.z1 = z1;
-			this.x2 = x2;
-			this.y2 = y2;
-			this.z2 = z2;
+			this.x = x;
+			this.y = y;
+			this.z = z;
+			this.w = w;
+			this.h = h;
+			this.l = l;
+		}
+		
+		protected Point3D getP2 () {
+			Point3D v = new Point3D(this.x, this.y, this.z);
+			return v;
+		}
+		protected Point3D getP1 () {
+			Point3D v = new Point3D(this.x + ((float) this.w) / MIN_BOX_WIDTH, this.y + ((float) this.h) / MIN_BOX_WIDTH, this.z + ((float) this.l) / MIN_BOX_WIDTH);
+			return v;
+		}
+		
+		protected Point3D transformPoint (Point3D p) {
+			
+			this.render.beforeTransformBox(p);
+			
+			return p;
 		}
 		
 		public void render (float f5) {
-			
 			Tessellator tessellator = Tessellator.instance;
-
-			float sX = this.x1;
-			float sY = this.y1;
-			float sZ = this.z1;
 			
-			float fX = sX + ((float) x2) / 10.f;
-			float fY = sY + ((float) y2) / 10.f;
-			float fZ = sZ + ((float) z2) / 10.f;
+			Point3D p1 = getP1();
+			Point3D p2 = getP2();
 			
-			f5 = 0.1f;
-			
-			sX += this.render.rotationPointX * f5;
-			sY += this.render.rotationPointY * f5;
-			sZ += this.render.rotationPointZ * f5;
-			fX += this.render.rotationPointX * f5;
-			fY += this.render.rotationPointY * f5;
-			fZ += this.render.rotationPointZ * f5;
+			p1 = this.transformPoint(p1);
+			p2 = this.transformPoint(p2);
 			
 			// Back
-			tessellator.addVertexWithUV(sX, fY, sZ, 0, 32);
-			tessellator.addVertexWithUV(fX, fY, sZ, 0, 32);
-			tessellator.addVertexWithUV(fX, sY, sZ, 0, 32);
-			tessellator.addVertexWithUV(sX, sY, sZ, 0, 32);
+			tessellator.addVertexWithUV(p1.x, p2.y, p1.z, 0, 0);
+			tessellator.addVertexWithUV(p2.x, p2.y, p1.z, 0, 1);
+			tessellator.addVertexWithUV(p2.x, p1.y, p1.z, 1, 1);
+			tessellator.addVertexWithUV(p1.x, p1.y, p1.z, 1, 0);
 			
 			// Left
-			tessellator.addVertexWithUV(sX, sY, sZ, 0, 32);
-			tessellator.addVertexWithUV(sX, sY, fZ, 0, 32);
-			tessellator.addVertexWithUV(sX, fY, fZ, 0, 32);
-			tessellator.addVertexWithUV(sX, fY, sZ, 0, 32);
+			tessellator.addVertexWithUV(p1.x, p1.y, p1.z, 0, 0);
+			tessellator.addVertexWithUV(p1.x, p1.y, p2.z, 0, 1);
+			tessellator.addVertexWithUV(p1.x, p2.y, p2.z, 1, 1);
+			tessellator.addVertexWithUV(p1.x, p2.y, p1.z, 1, 0);
 			
 			// Right
-			tessellator.addVertexWithUV(fX, fY, sZ, 0, 32);
-			tessellator.addVertexWithUV(fX, fY, fZ, 0, 32);
-			tessellator.addVertexWithUV(fX, sY, fZ, 0, 32);
-			tessellator.addVertexWithUV(fX, sY, sZ, 0, 32);
+			tessellator.addVertexWithUV(p2.x, p2.y, p1.z, 0, 0);
+			tessellator.addVertexWithUV(p2.x, p2.y, p2.z, 0, 1);
+			tessellator.addVertexWithUV(p2.x, p1.y, p2.z, 1, 1);
+			tessellator.addVertexWithUV(p2.x, p1.y, p1.z, 1, 0);
 			
 			// Front
-			tessellator.addVertexWithUV(sX, sY, fZ, 0, 32);
-			tessellator.addVertexWithUV(fX, sY, fZ, 0, 32);
-			tessellator.addVertexWithUV(fX, fY, fZ, 0, 32);
-			tessellator.addVertexWithUV(sX, fY, fZ, 0, 32);
+			tessellator.addVertexWithUV(p1.x, p1.y, p2.z, 0, 0);
+			tessellator.addVertexWithUV(p2.x, p1.y, p2.z, 0, 1);
+			tessellator.addVertexWithUV(p2.x, p2.y, p2.z, 1, 1);
+			tessellator.addVertexWithUV(p1.x, p2.y, p2.z, 1, 0);
 			
 			// Bottom
-			tessellator.addVertexWithUV(fX, sY, sZ, 0, 32);
-			tessellator.addVertexWithUV(fX, sY, fZ, 0, 32);
-			tessellator.addVertexWithUV(sX, sY, fZ, 0, 32);
-			tessellator.addVertexWithUV(sX, sY, sZ, 0, 32);
+			tessellator.addVertexWithUV(p2.x, p1.y, p1.z, 0, 0);
+			tessellator.addVertexWithUV(p2.x, p1.y, p2.z, 0, 1);
+			tessellator.addVertexWithUV(p1.x, p1.y, p2.z, 1, 1);
+			tessellator.addVertexWithUV(p1.x, p1.y, p1.z, 1, 0);
 			
 			// Top
-			tessellator.addVertexWithUV(sX, fY, sZ, 0, 32);
-			tessellator.addVertexWithUV(sX, fY, fZ, 0, 32);
-			tessellator.addVertexWithUV(fX, fY, fZ, 0, 32);
-			tessellator.addVertexWithUV(fX, fY, sZ, 0, 32);
+			tessellator.addVertexWithUV(p1.x, p2.y, p1.z, 0, 0);
+			tessellator.addVertexWithUV(p1.x, p2.y, p2.z, 0, 1);
+			tessellator.addVertexWithUV(p2.x, p2.y, p2.z, 1, 1);
+			tessellator.addVertexWithUV(p2.x, p2.y, p1.z, 1, 0);
 		}
 		
 	}
@@ -116,6 +163,15 @@ public class ModelRenderer {
 		for (Box box: this.boxs) {
 			box.render(f5);
 		}
+	}
+	
+	public void beforeTransformBox(Point3D p) {
+		p.translate(this.rotationPointX / MIN_BOX_WIDTH, this.rotationPointY / MIN_BOX_WIDTH, this.rotationPointZ / MIN_BOX_WIDTH);
+		
+		if (this.mirror) {
+			p.mirrorY ();
+		}
+		
 	}
 
 	public void setRotationPoint(float f, float g, float h) {
