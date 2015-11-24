@@ -16,15 +16,6 @@ public class DemoRenderer extends AModelRenderer {
 
 	private ModelArmChair modelDemo = new ModelArmChair();
 	
-	private HashMap<String, ResourceLocation> textures = new HashMap<String, ResourceLocation>();
-	protected boolean isInventory;
-	protected boolean light = false;
-	protected boolean lightInventory = true;
-	protected double scale = 1.0;
-	protected double scaleInventory = 1.0;
-	protected float alpha = 1.0F;
-	
-	
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer) {
 		super.renderInventoryBlock(block, metadata, modelID, renderer);

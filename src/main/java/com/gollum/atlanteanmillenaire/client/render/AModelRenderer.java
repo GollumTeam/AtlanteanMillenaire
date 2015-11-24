@@ -23,7 +23,6 @@ import net.minecraft.world.IBlockAccess;
 
 public abstract class AModelRenderer implements ISimpleBlockRenderingHandler {
 	
-	private HashMap<String, ResourceLocation> textures = new HashMap<String, ResourceLocation>();
 	protected boolean isInventory = false;
 	protected boolean light = false;
 	protected boolean lightInventory = true;
@@ -47,8 +46,12 @@ public abstract class AModelRenderer implements ISimpleBlockRenderingHandler {
 	protected void renderModel(ModelBase model, String textureName, int x, int y, int z, float rotation, RenderBlocks renderer) {
 		
 		Tessellator tessellator = Tessellator.instance;
-		tessellator.addTranslation(x, y, z);
 		
+		float alpha = 1.F;
+		
+		tessellator.addTranslation(x, y, z);
+		tessellator.setBrightness(ModBlocks.blockDemo.getMixedBrightnessForBlock(renderer.blockAccess, x, y, z));
+		tessellator.setColorOpaque_F(alpha, alpha, alpha);
 //		IIcon icon = ;
 		renderer.setOverrideBlockTexture(ModBlocks.blockDemo.getIcon(0, 0));
 //		renderer.setOverrideBlockTexture(new TextureModel(textureName));
