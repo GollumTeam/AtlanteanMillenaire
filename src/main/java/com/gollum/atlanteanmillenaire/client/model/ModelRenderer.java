@@ -5,10 +5,8 @@ import java.util.ArrayList;
 import com.gollum.atlanteanmillenaire.client.model.ModelRenderer.Box.Point3D;
 import com.gollum.atlanteanmillenaire.inits.ModBlocks;
 
-import javafx.scene.transform.Transform;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.Tuple;
+import net.minecraft.util.IIcon;
 
 public class ModelRenderer {
 	
@@ -76,12 +74,12 @@ public class ModelRenderer {
 			this.l = l;
 		}
 		
-		protected Point3D getP2 () {
-			Point3D v = new Point3D(this.x, this.y, this.z);
+		protected Point3D getP2 (float f5) {
+			Point3D v = new Point3D(this.x*f5, this.y*f5, this.z*f5);
 			return v;
 		}
-		protected Point3D getP1 () {
-			Point3D v = new Point3D(this.x + ((float) this.w) / MIN_BOX_WIDTH, this.y + ((float) this.h) / MIN_BOX_WIDTH, this.z + ((float) this.l) / MIN_BOX_WIDTH);
+		protected Point3D getP1 (float f5) {
+			Point3D v = new Point3D((this.x + ((float) this.w)) * f5, (this.y + ((float) this.h)) * f5, (this.z + ((float) this.l)) * f5);
 			return v;
 		}
 		
@@ -95,47 +93,72 @@ public class ModelRenderer {
 		public void render (float f5) {
 			Tessellator tessellator = Tessellator.instance;
 			
-			Point3D p1 = getP1();
-			Point3D p2 = getP2();
+			Point3D p1 = getP1(f5);
+			Point3D p2 = getP2(f5);
 			
 			p1 = this.transformPoint(p1);
 			p2 = this.transformPoint(p2);
 			
+			IIcon c = ModBlocks.blockDemo.getIcon(0, 0);
+			
+			float minU = c.getMinU();
+			float minV = c.getMinV();
+			float maxU = c.getMaxU();
+			float maxV = c.getMaxV();
+			
+			float u, v, U, V;
+			
+			u = minU + textureY / textureH;
+			v = minV + textureX / textureW;
+			
+			u = minU;
+			v = minV;
+			
+			U = maxU;
+			V = maxV;
+			
+			u = 0;
+			v = 0;
+			
+			U = 1;
+			V = 1;
+
+			
 			// Back
-			tessellator.addVertexWithUV(p1.x, p2.y, p1.z, 0, 0);
-			tessellator.addVertexWithUV(p2.x, p2.y, p1.z, 0, 1);
-			tessellator.addVertexWithUV(p2.x, p1.y, p1.z, 1, 1);
-			tessellator.addVertexWithUV(p1.x, p1.y, p1.z, 1, 0);
+			tessellator.addVertexWithUV(p1.x, p2.y, p1.z, u, v);
+			tessellator.addVertexWithUV(p2.x, p2.y, p1.z, u, V);
+			tessellator.addVertexWithUV(p2.x, p1.y, p1.z, U, V);
+			tessellator.addVertexWithUV(p1.x, p1.y, p1.z, U, v);
 			
 			// Left
-			tessellator.addVertexWithUV(p1.x, p1.y, p1.z, 0, 0);
-			tessellator.addVertexWithUV(p1.x, p1.y, p2.z, 0, 1);
-			tessellator.addVertexWithUV(p1.x, p2.y, p2.z, 1, 1);
-			tessellator.addVertexWithUV(p1.x, p2.y, p1.z, 1, 0);
+			tessellator.addVertexWithUV(p1.x, p1.y, p1.z, u, v);
+			tessellator.addVertexWithUV(p1.x, p1.y, p2.z, u, V);
+			tessellator.addVertexWithUV(p1.x, p2.y, p2.z, U, V);
+			tessellator.addVertexWithUV(p1.x, p2.y, p1.z, U, v);
 			
 			// Right
-			tessellator.addVertexWithUV(p2.x, p2.y, p1.z, 0, 0);
-			tessellator.addVertexWithUV(p2.x, p2.y, p2.z, 0, 1);
-			tessellator.addVertexWithUV(p2.x, p1.y, p2.z, 1, 1);
-			tessellator.addVertexWithUV(p2.x, p1.y, p1.z, 1, 0);
+			tessellator.addVertexWithUV(p2.x, p2.y, p1.z, u, v);
+			tessellator.addVertexWithUV(p2.x, p2.y, p2.z, u, V);
+			tessellator.addVertexWithUV(p2.x, p1.y, p2.z, U, V);
+			tessellator.addVertexWithUV(p2.x, p1.y, p1.z, U, v);
 			
 			// Front
-			tessellator.addVertexWithUV(p1.x, p1.y, p2.z, 0, 0);
-			tessellator.addVertexWithUV(p2.x, p1.y, p2.z, 0, 1);
-			tessellator.addVertexWithUV(p2.x, p2.y, p2.z, 1, 1);
-			tessellator.addVertexWithUV(p1.x, p2.y, p2.z, 1, 0);
+			tessellator.addVertexWithUV(p1.x, p1.y, p2.z, u, v);
+			tessellator.addVertexWithUV(p2.x, p1.y, p2.z, u, V);
+			tessellator.addVertexWithUV(p2.x, p2.y, p2.z, U, V);
+			tessellator.addVertexWithUV(p1.x, p2.y, p2.z, U, v);
 			
 			// Bottom
-			tessellator.addVertexWithUV(p2.x, p1.y, p1.z, 0, 0);
-			tessellator.addVertexWithUV(p2.x, p1.y, p2.z, 0, 1);
-			tessellator.addVertexWithUV(p1.x, p1.y, p2.z, 1, 1);
-			tessellator.addVertexWithUV(p1.x, p1.y, p1.z, 1, 0);
+			tessellator.addVertexWithUV(p2.x, p1.y, p1.z, u, v);
+			tessellator.addVertexWithUV(p2.x, p1.y, p2.z, u, V);
+			tessellator.addVertexWithUV(p1.x, p1.y, p2.z, U, V);
+			tessellator.addVertexWithUV(p1.x, p1.y, p1.z, U, v);
 			
 			// Top
-			tessellator.addVertexWithUV(p1.x, p2.y, p1.z, 0, 0);
-			tessellator.addVertexWithUV(p1.x, p2.y, p2.z, 0, 1);
-			tessellator.addVertexWithUV(p2.x, p2.y, p2.z, 1, 1);
-			tessellator.addVertexWithUV(p2.x, p2.y, p1.z, 1, 0);
+			tessellator.addVertexWithUV(p1.x, p2.y, p1.z, u, v);
+			tessellator.addVertexWithUV(p1.x, p2.y, p2.z, u, V);
+			tessellator.addVertexWithUV(p2.x, p2.y, p2.z, U, V);
+			tessellator.addVertexWithUV(p2.x, p2.y, p1.z, U, v);
 		}
 		
 	}
@@ -147,16 +170,23 @@ public class ModelRenderer {
 	
 	public ArrayList<Box> boxs = new ArrayList<Box>();
 
-	public ModelRenderer(ModelBase model, int i, int j) {
-		// TODO Auto-generated constructor stub
+	private int textureX;
+	private int textureY;
+	private int textureW;
+	private int textureH;
+
+	public ModelRenderer(ModelBase model, int U, int V) {
+		this.textureX = U;
+		this.textureY = V;
 	}
 
 	public void addBox(float x1, float y1, float z1, int x2, int y2, int z2) {
 		this.boxs.add(new Box(this, x1, y1, z1, x2, y2, z2));
 	}
 
-	public void setTextureSize(int i, int j) {
-		// TODO Auto-generated method stub
+	public void setTextureSize(int w, int h) {
+		this.textureW = w;
+		this.textureH = w;
 	}
 
 	public void render(float f5) {

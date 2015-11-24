@@ -6,6 +6,8 @@ import com.gollum.core.tools.helper.blocks.HBlock;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.world.IBlockAccess;
 
 public class BlockDemo extends HBlock {
@@ -13,7 +15,7 @@ public class BlockDemo extends HBlock {
 	public BlockDemo(String registerName, boolean active) {
 		super(registerName, Material.rock);
 	}
-		
+	
 	///////////////////
 	// Data du block //
 	///////////////////
