@@ -72,7 +72,6 @@ public class BlockDemo extends HBlock {
 		
 		if (helper.vanillaTexture) return super.getIcon(side, metadata);
 		
-		int orientation = this.getOrientation(metadata);
 		switch (side) {
 			case 0: 
 				return this.iconBottom;
@@ -105,7 +104,7 @@ public class BlockDemo extends HBlock {
 	 */
 	@Override
 	public int getRenderType() {
-		return ClientProxyAtlanteanMillenaire.DemoRenderID;
+		return ClientProxyAtlanteanMillenaire.demoRenderID;
 	}
 	
 	/**

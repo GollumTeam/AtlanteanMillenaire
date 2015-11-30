@@ -10,12 +10,12 @@ public class ClientProxyAtlanteanMillenaire extends CommonProxyAtlanteanMillenai
 	/////////////////
 	// Renders IDs //
 	/////////////////
-	public static int DemoRenderID;
+	public static int demoRenderID;
 
 	public void registerRenderers() {
 		
-		ClientProxyAtlanteanMillenaire.DemoRenderID  = RenderingRegistry.getNextAvailableRenderId();
+		ClientProxyAtlanteanMillenaire.demoRenderID  = RenderingRegistry.getNextAvailableRenderId();
 		
-		RenderingRegistry.registerBlockHandler(ClientProxyAtlanteanMillenaire.DemoRenderID, new DemoRenderer());
+		RenderingRegistry.registerBlockHandler(ClientProxyAtlanteanMillenaire.demoRenderID, new DemoRenderer());
 	}
 }
